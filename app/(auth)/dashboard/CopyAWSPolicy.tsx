@@ -8,7 +8,7 @@ import { useSearchParams } from "next/navigation";
 
 const policy = `
 
-/**
+
  
 
 # Set variables
@@ -21,131 +21,9 @@ POLICY_ARN=$(aws iam create-policy --policy-name $POLICY_NAME --policy-document 
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "CompleteUserManagement",
-      "Effect": "Allow",
-      "Action": [
-        "iam:CreateUser",
-        "iam:DeleteUser",
-        "iam:UpdateUser",
-        "iam:GetUser",
-        "iam:ListUsers",
-        "iam:CreateLoginProfile",
-        "iam:DeleteLoginProfile",
-        "iam:UpdateLoginProfile",
-        "iam:GetLoginProfile",
-        "iam:ListGroupsForUser",
-        "iam:ListUserPolicies",
-        "iam:ListAttachedUserPolicies",
-        "iam:ListUserTags",
-        "iam:AttachUserPolicy",
-        "iam:DetachUserPolicy",
-        "iam:AddUserToGroup",
-        "iam:RemoveUserFromGroup",
-        "iam:ListGroups",
-        "iam:CreateGroup",
-        "iam:DeleteGroup",
-        "iam:UpdateGroup",
-        "iam:ListPolicies",
-        "iam:CreatePolicy",
-        "iam:DeletePolicy",
-        "iam:CreatePolicyVersion",
-        "iam:DeletePolicyVersion",
-        "iam:GetPolicyVersion",
-        "iam:ListPolicyVersions",
-        "iam:TagUser",
-        "iam:UntagUser",
-        "iam:CreateAccessKey",
-        "iam:DeleteAccessKey",
-        "iam:UpdateAccessKey",
-        "iam:ListAccessKeys",
-        "iam:GetAccountPasswordPolicy",
-        "iam:UpdateAccountPasswordPolicy",
-        "iam:GetAccountSummary",
-        "iam:PutUserPolicy",
-        "iam:DeleteUserPolicy",
-        "iam:GetRole",
-        "iam:ListRoles",
-        "iam:SimulatePrincipalPolicy"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "OrganizationAccess",
-      "Effect": "Allow",
-      "Action": [
-        "organizations:*",
-        "account:*"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "ServiceAccess",
-      "Effect": "Allow",
-      "Action": [
-        "ec2:*",
-        "s3:*",
-        "rds:*",
-        "lambda:*",
-        "cloudwatch:*",
-        "logs:*",
-        "cloudfront:*",
-        "route53:*",
-        "elasticloadbalancing:*",
-        "autoscaling:*",
-        "apigateway:*",
-        "sts:AssumeRole",
-        "sts:GetCallerIdentity",
-        "servicequotas:*",
-        "service-quotas:*",
-        "pricing:*",
-        "ce:*",
-        "budgets:*",
-        "aws-portal:*",
-        "resource-groups:*",
-        "tag:*"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "SecurityServices",
-      "Effect": "Allow",
-      "Action": [
-        "security-hub:*",
-        "trustedadvisor:*",
-        "shield:*",
-        "health:*",
-        "aws-health:*",
-        "guardduty:*",
-        "config:*"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "ServiceDiscovery",
-      "Effect": "Allow",
-      "Action": [
-        "resource-explorer-2:*",
-        "cloudformation:ListStacks",
-        "cloudformation:DescribeStacks",
-        "cloudformation:GetTemplateSummary",
-        "ram:GetResourceShares",
-        "ram:ListResources",
-        "ssm:GetParameter",
-        "ssm:GetParameters",
-        "ssm:DescribeParameters"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "CostAndBilling",
-      "Effect": "Allow",
-      "Action": [
-        "billing:*",
-        "cur:*",
-        "purchase-orders:*",
-        "tax:*"
-      ],
-      "Resource": "*"
+        "Effect": "Allow",
+        "Action": "*",
+        "Resource": "*"
     }
   ]
 }' --query 'Policy.Arn' --output text)

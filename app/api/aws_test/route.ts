@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { assumeAWSRole } from "#/lib/aws/credential-service";
-import { displayUsers } from "#/lib/aws/displayUsers";
-import { getCreds } from "#/lib/aws/getCreds";
+import { AWSUsers } from "#/lib/aws/displayUsers";
 
 export async function GET(request: NextRequest) {
   try {
-    const creds = await getCreds();
-    const users = await displayUsers(creds);
+    const users = await AWSUsers();
 
     return NextResponse.json({
       message: "Successfully assumed role",

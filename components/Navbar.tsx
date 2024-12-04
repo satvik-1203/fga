@@ -12,6 +12,13 @@ const nonAuthLinks = [
   },
 ];
 
+const authLinks = [
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+  },
+];
+
 const Navbar: React.FC<Props> = async () => {
   const user = await currentUser();
 
@@ -38,7 +45,14 @@ const Navbar: React.FC<Props> = async () => {
       <div>
         <h1 className="text-2xl font-bold  text-white">Signal</h1>
       </div>
-      <div>
+      <div className="flex space-x-2 items-center">
+        <ul className="flex space-x-2">
+          {authLinks.map((link) => (
+            <li key={link.name}>
+              <Link href={link.href}>{link.name}</Link>
+            </li>
+          ))}
+        </ul>
         <UserButton />
       </div>
     </nav>
