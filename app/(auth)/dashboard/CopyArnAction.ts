@@ -1,10 +1,8 @@
 "use server";
 
 import { assumeAWSRole } from "#/lib/aws/credential-service";
-import { getCreds } from "#/lib/aws/getCreds";
 import prisma from "#/prisma/prisma.config";
 import { currentUser } from "@clerk/nextjs/server";
-import { JsonObject } from "@prisma/client/runtime/library";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -28,15 +26,59 @@ export async function CopyArnAction(formData: FormData) {
     redirect(`/dashboard?${searchParams.toString()}`);
   }
 
-  const prismaUser = await prisma.user.update({
+  const dbUser = await prisma.user.findUnique({
     where: {
       id: currUser!.id,
     },
-    data: {
-      awsSession: creds as any,
-      awsRoleArn: roleArn.trim(),
+    include: {
+      Org: {
+        include: {
+          creds: true,
+        },
+      },
     },
   });
 
+  if (!dbUser || !dbUser.Org) {
+    redirect(`/signout`);
+  }
+
+  const org = dbUser.Org;
+
+  const awsCreds = org?.creds.find((cred) => cred.name === "aws");
+
+  if (awsCreds) {
+    await prisma.credential.update({
+      where: { id: awsCreds.id },
+      data: {
+        secrets: {
+          // eslint-disable-next-line
+          awsSession: creds as any,
+          awsRoleArn: roleArn.trim(),
+        },
+      },
+    });
+  } else {
+    await prisma.credential.create({
+      data: {
+        orgId: org.id,
+        name: "aws",
+
+        secrets: {
+          // eslint-disable-next-line
+          awsSession: creds as any,
+          awsRoleArn: roleArn.trim(),
+        },
+      },
+    });
+  }
+
   revalidatePath("/dashboard");
 }
+
+/**
+ *     data: {
+      awsSession: creds as any,
+      awsRoleArn: roleArn.trim(),
+
+ */

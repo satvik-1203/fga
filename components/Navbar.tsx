@@ -17,6 +17,14 @@ const authLinks = [
     name: "Dashboard",
     href: "/dashboard",
   },
+  {
+    name: "Team",
+    href: "/team",
+  },
+  {
+    name: "Services",
+    href: "/services",
+  },
 ];
 
 const Navbar: React.FC<Props> = async () => {

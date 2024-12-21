@@ -1,29 +1,31 @@
-import { NextRequest, NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import prisma from "#/prisma/prisma.config";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const user = await currentUser();
   if (!user) {
     return redirect("/login");
   }
 
-  const name = user.fullName || "";
-  const email = user.emailAddresses[0].emailAddress;
-  const pfp = user.imageUrl;
-  const userId = user.id;
-
-  await prisma.user.upsert({
+  const dbUser = await prisma.user.findUnique({
     where: {
-      id: userId,
+      id: user.id,
     },
-    update: {},
-    create: {
-      id: userId,
-      email,
-      name,
-      pfp,
+  });
+
+  if (!dbUser) {
+    // logout of clerk
+    return redirect("/signout");
+  }
+
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      pfp: user.imageUrl,
+      name: user.firstName + " " + user.lastName,
     },
   });
 

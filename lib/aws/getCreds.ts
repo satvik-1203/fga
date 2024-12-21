@@ -37,14 +37,35 @@ export async function getCreds(): Promise<Credentials | null> {
     const prismaUser = await prisma.user.findUnique({
       where: { email },
       select: {
-        awsSession: true,
-        awsRoleArn: true,
+        Org: true,
       },
     });
 
-    if (prismaUser?.awsSession && prismaUser?.awsRoleArn) {
-      awsSession = prismaUser.awsSession as JsonObject;
-      awsRoleArn = prismaUser.awsRoleArn;
+    if (!prismaUser?.Org) {
+      return null;
+    }
+
+    const awsCreds = await prisma.credential.findMany({
+      where: {
+        orgId: prismaUser.Org.id,
+        name: "aws",
+      },
+    });
+
+    if (awsCreds.length === 0) {
+      return null;
+    }
+
+    const awsCred = awsCreds[0];
+
+    if (
+      awsCred.secrets &&
+      typeof awsCred.secrets === "object" &&
+      "awsSession" in awsCred.secrets &&
+      "awsRoleArn" in awsCred.secrets
+    ) {
+      awsSession = awsCred.secrets.awsSession as JsonObject;
+      awsRoleArn = awsCred.secrets.awsRoleArn as string;
 
       // Cache the data
       cache.set(email, {
